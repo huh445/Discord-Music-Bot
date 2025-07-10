@@ -1,0 +1,31 @@
+# Ignore Python cache and virtual envs
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.venv/
+env/
+venv/
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore system junk
+.DS_Store
+Thumbs.db
+
+# Ignore secrets
+.env
+*.env
+secrets.json
+
+# Ignore log files
+*.log
+
+# Ignore song files
+playlist/*
+songs/*
+!playlist/.gitkeep
+!songs/.gitkeep
