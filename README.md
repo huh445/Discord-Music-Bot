@@ -41,10 +41,7 @@ A Discord bot built using Python and `discord.py` that streams music from YouTub
 
 3. Make sure FFmpeg is installed and accessible in your terminal/command prompt. Test with `ffmpeg -version`.
 
-4. Create a `.env` file in the root directory and add your Discord bot token:  
-   ```env
-   DISCORD_TOKEN=your-bot-token-here
-   ```
+4. Add your DISCORD_TOKEN to your Environment Variables.
 
 5. Prepare local music folders if you want to use local playback:  
    - Place MP3 files in `/songs` for single file playback  
@@ -52,7 +49,7 @@ A Discord bot built using Python and `discord.py` that streams music from YouTub
 
 6. Run the bot  
    ```bash
-   python bot.py
+   python main.py
    ```
 
 ---
@@ -61,18 +58,18 @@ A Discord bot built using Python and `discord.py` that streams music from YouTub
 
 The bot uses slash commands. Examples:
 
-| Command         | Description                          | Usage Example                      |
+| Command         | Description                        | Usage Example                    |
 |-----------------|------------------------------------|----------------------------------|
 | `/join`         | Join the voice channel you’re in   | `/join`                          |
-| `/leave`        | Leave the current voice channel     | `/leave`                         |
+| `/leave`        | Leave the current voice channel    | `/leave`                         |
 | `/play`         | Search and play a song from YouTube| `/play Never Gonna Give You Up`  |
-| `/play_url`     | Play a direct YouTube URL           | `/play_url https://youtu.be/...` |
-| `/play_mp3`     | Play a local MP3 file from `/songs`| `/play_mp3 mysong.mp3`            |
-| `/play_playlist`| Play a folder of MP3s as playlist   | `/play_playlist chillbeats`      |
-| `/skip`         | Skip current track                  | `/skip`                         |
-| `/nowplaying`   | Show current playing song          | `/nowplaying`                   |
-| `/loop`         | Toggle looping of current song     | `/loop`                         |
-| `/stop`         | Stop playback and clear queue      | `/stop`                         |
+| `/play_url`     | Play a direct mp3 or youtube URL   | `/play_url https://youtu.be/...` |
+| `/play_mp3`     | Play a local MP3 file from `/songs`| `/play_mp3 mysong.mp3`           |
+| `/play_playlist`| Play a folder of MP3s as playlist  | `/play_playlist chillbeats`      |
+| `/skip`         | Skip current track                 | `/skip`                          |
+| `/nowplaying`   | Show current playing song          | `/nowplaying`                    |
+| `/loop`         | Toggle looping of current song     | `/loop`                          |
+| `/stop`         | Stop playback and clear queue      | `/stop`                          |
 
 ---
 
