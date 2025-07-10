@@ -37,7 +37,6 @@ A Discord bot built using Python and `discord.py` that streams music from YouTub
 2. Install dependencies  
    ```bash
    pip install -r requirements.txt
-   # requirements.txt should include: discord.py yt-dlp
    ```
 
 3. Make sure FFmpeg is installed and accessible in your terminal/command prompt. Test with `ffmpeg -version`.
