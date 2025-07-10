@@ -77,16 +77,6 @@ The bot uses slash commands. Examples:
 
 ---
 
-## Notes & Recommendations
-
-- Make sure users invoking play commands are connected to a voice channel, or the bot will prompt them to join one first.  
-- FFmpeg is critical; ensure your system has it installed and updated for smooth playback.  
-- Local MP3 files and playlists need to be correctly placed with matching filenames and extensions.  
-- The bot uses `yt-dlp` for robust YouTube extraction; updating it regularly avoids issues with YouTube changes.  
-- The bot manages voice connections intelligently, reconnecting and cleaning up after playlists end.
-
----
-
 ## Contributing
 
 Contributions are welcome! Please keep code clean and comment where necessary. Feel free to submit pull requests for feature additions or bug fixes.
