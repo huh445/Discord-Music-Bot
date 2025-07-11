@@ -83,9 +83,9 @@ Contributions are welcome! Please keep code clean and comment where necessary. F
 
 ## Known Bugs
 
-- Playlist errors with /stop and /loop commands
-- /stop command not working properly
-- /loop command having unintended issues with FFmpeg
+- [ ] Playlist errors with /stop and /loop commands
+- [ ] /stop command not working properly
+- [ ] /loop command having unintended issues with FFmpeg
 
 ---
 
