@@ -23,6 +23,8 @@ A Discord bot built using Python and `discord.py` that streams music from YouTub
 - `yt-dlp` for YouTube audio extraction  
 - FFmpeg installed and available in your system PATH  
 - A Discord bot token with **applications.commands** scope enabled  
+- Eyed3 for tools
+- DotEnv for getting the environment variable for running the bot
 
 ---
 
@@ -76,6 +78,14 @@ The bot uses slash commands. Examples:
 ## Contributing
 
 Contributions are welcome! Please keep code clean and comment where necessary. Feel free to submit pull requests for feature additions or bug fixes.
+
+---
+
+## Known Bugs
+
+- Playlist errors with /stop and /loop commands
+- /stop command not working properly
+- /loop command having unintended issues with FFmpeg
 
 ---
 
