@@ -1,6 +1,5 @@
 # utils.py
 import re
-import os
 import discord
 
 URL_REGEX = re.compile(r'https?://')
@@ -14,16 +13,20 @@ async def ensure_voice(interaction: discord.Interaction) -> discord.VoiceClient 
         if interaction.user.voice:
             return await interaction.user.voice.channel.connect()
         else:
-            await interaction.response.send_message("❌ You need to join a voice channel first!")
+            await interaction.response.send_message("❌ Please join a voice channel first.")
             return None
     return vc
 
-def get_loop_after(vc, source_obj, *args, **kwargs):
+def get_loop_after(vc: discord.VoiceClient, player_state, source_factory):
+    """
+    Returns an after-callback that, if player_state.is_looping is True,
+    will create a fresh source via source_factory and replay it.
+    """
     def after(error=None):
         if error:
             print(f"❗ Playback error: {error}")
-        elif vc and vc.is_connected() and hasattr(source_obj, 'cleanup'):
-            # On loop, clean up old process
-            source_obj.cleanup()
-            vc.play(source_obj, after=after)
+        elif player_state.is_looping:
+            new_source = source_factory()
+            player_state.current_source = new_source
+            vc.play(new_source, after=after)
     return after

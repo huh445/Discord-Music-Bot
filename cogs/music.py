@@ -50,7 +50,7 @@ class Music(commands.Cog):
     @app_commands.describe(search="Song name or URL")
     async def play(self, interaction: discord.Interaction, search: str):
         vc = await ensure_voice(interaction)
-        if not vc: 
+        if not vc:
             return
 
         await interaction.response.send_message(f"🔍 Searching `{search}`…")
@@ -64,11 +64,14 @@ class Music(commands.Cog):
             title = info.get('title', 'Unknown')
             self.player_state.current_song = title
 
-            source = discord.FFmpegPCMAudio(url, **ffmpeg_options)
+            # build a factory for fresh FFmpegPCMAudio sources
+            source_factory = lambda: discord.FFmpegPCMAudio(url, **ffmpeg_options)
+            source = source_factory()
             self.player_state.current_source = source
-            vc.play(source, after=get_loop_after(vc, source))
 
+            vc.play(source, after=get_loop_after(vc, self.player_state, source_factory))
             await interaction.followup.send(f"▶️ Now playing **{title}**")
+
         except Exception as e:
             await interaction.followup.send(f"⚠️ Error: {e}")
 
@@ -89,12 +92,14 @@ class Music(commands.Cog):
             title = data.get('title', 'Unknown')
             self.player_state.current_song = title
 
-            source = discord.FFmpegPCMAudio(stream_url, **ffmpeg_options)
+            source_factory = lambda: discord.FFmpegPCMAudio(stream_url, **ffmpeg_options)
+            source = source_factory()
             self.player_state.current_source = source
-            vc.stop()
-            vc.play(source, after=get_loop_after(vc, source))
 
+            vc.stop()
+            vc.play(source, after=get_loop_after(vc, self.player_state, source_factory))
             await interaction.followup.send(f"🎧 Streaming URL: **{title}**")
+
         except Exception as e:
             await interaction.followup.send(f"⚠️ Error: {e}")
 
@@ -111,11 +116,12 @@ class Music(commands.Cog):
             return
 
         self.player_state.current_song = filename
-        source = discord.FFmpegPCMAudio(path)
+        source_factory = lambda: discord.FFmpegPCMAudio(path)
+        source = source_factory()
         self.player_state.current_source = source
-        vc.stop()
-        vc.play(source, after=get_loop_after(vc, source))
 
+        vc.stop()
+        vc.play(source, after=get_loop_after(vc, self.player_state, source_factory))
         await interaction.response.send_message(f"🎵 Playing local file: **{filename}**")
 
     @app_commands.command(name="play_playlist", description="Play a folder of MP3s as a playlist")
@@ -135,7 +141,7 @@ class Music(commands.Cog):
             await interaction.response.send_message("❌ No MP3s in that playlist.")
             return
 
-        # Initialize playlist state
+        # initialize playlist
         self.player_state.current_playlist = files.copy()
         self.player_state.current_folder = folder
         self.player_state.current_song = self.player_state.current_playlist.pop(0)
@@ -143,10 +149,13 @@ class Music(commands.Cog):
         first_path = os.path.join(folder, self.player_state.current_song)
         source = discord.FFmpegPCMAudio(first_path)
         self.player_state.current_source = source
+
         vc.stop()
         vc.play(source, after=lambda err: self._play_next(err, interaction.channel, vc))
 
-        await interaction.response.send_message(f"📻 Started playlist **{playlist_name}**: **{self.player_state.current_song}**")
+        await interaction.response.send_message(
+            f"📻 Started playlist **{playlist_name}**: **{self.player_state.current_song}**"
+        )
 
     def _play_next(self, error, text_channel: discord.abc.Messageable, vc: discord.VoiceClient):
         if error:
@@ -160,7 +169,6 @@ class Music(commands.Cog):
             source = discord.FFmpegPCMAudio(path)
             self.player_state.current_source = source
 
-            # Notify in text channel
             coro = text_channel.send(f"▶️ Now playing: **{next_song}**")
             asyncio.run_coroutine_threadsafe(coro, self.bot.loop)
 
@@ -168,7 +176,7 @@ class Music(commands.Cog):
         else:
             coro = text_channel.send("✅ Playlist finished.")
             asyncio.run_coroutine_threadsafe(coro, self.bot.loop)
-            # Cleanup
+            # cleanup the last source
             if self.player_state.current_source:
                 self.player_state.current_source.cleanup()
                 self.player_state.current_source = None
@@ -190,7 +198,9 @@ class Music(commands.Cog):
     @app_commands.command(name="nowplaying", description="Show current song")
     async def nowplaying(self, interaction: discord.Interaction):
         song = self.player_state.current_song
-        await interaction.response.send_message(f"🎧 Now playing **{song}**" if song else "❌ No song playing.")
+        await interaction.response.send_message(
+            f"🎧 Now playing **{song}**" if song else "❌ No song playing."
+        )
 
     @app_commands.command(name="loop", description="Toggle looping of current song")
     async def loop(self, interaction: discord.Interaction):
