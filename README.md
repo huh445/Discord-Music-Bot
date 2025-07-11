@@ -32,7 +32,7 @@ A Discord bot built using Python and `discord.py` that streams music from YouTub
 
 1. Clone the repository  
    ```bash
-   git clone https://github.com/huh445/discordbot1.git
+   git clone https://github.com/huh445/discord-music-bot.git
    cd discordbot1
    ```
 
