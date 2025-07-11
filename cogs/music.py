@@ -228,14 +228,15 @@ class Music(commands.Cog):
             await interaction.response.send_message("❌ Nothing to stop.")
             return
 
-        vc.stop()
         if self.player_state.current_source:
             self.player_state.current_source.cleanup()
             self.player_state.current_source = None
 
-        self.player_state.current_playlist.clear()
+        self.player_state.current_playlist = None
         self.player_state.current_folder = None
         self.player_state.current_song = None
+
+        vc.stop()
 
         await interaction.response.send_message("🛑 Playback stopped and cleared.")
 
