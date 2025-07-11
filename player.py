@@ -5,4 +5,4 @@ class PlayerState:
         self.current_folder = None
         self.current_song = None
         self.is_looping = False
-        self.current_source = None   # Hold FFmpegPCMAudio object
+        self.current_source = None

@@ -29,6 +29,7 @@ class Music(commands.Cog):
         self.bot = bot
         self.player_state = PlayerState()
 
+    # /join
     @app_commands.command(name="join", description="Join your voice channel")
     async def join(self, interaction: discord.Interaction):
         if interaction.user.voice:
@@ -37,6 +38,7 @@ class Music(commands.Cog):
         else:
             await interaction.response.send_message("❌ Please join a voice channel first.")
 
+    # /leave
     @app_commands.command(name="leave", description="Leave the voice channel")
     async def leave(self, interaction: discord.Interaction):
         vc = interaction.guild.voice_client
@@ -46,6 +48,7 @@ class Music(commands.Cog):
         else:
             await interaction.response.send_message("❌ I'm not connected.")
 
+    # /play
     @app_commands.command(name="play", description="Search and play from YouTube")
     @app_commands.describe(search="Song name or URL")
     async def play(self, interaction: discord.Interaction, search: str):
@@ -75,6 +78,8 @@ class Music(commands.Cog):
         except Exception as e:
             await interaction.followup.send(f"⚠️ Error: {e}")
 
+
+    # /play_url
     @app_commands.command(name="play_url", description="Play a YouTube audio stream from a URL")
     @app_commands.describe(url="Direct YouTube URL")
     async def play_url(self, interaction: discord.Interaction, url: str):
@@ -103,6 +108,7 @@ class Music(commands.Cog):
         except Exception as e:
             await interaction.followup.send(f"⚠️ Error: {e}")
 
+    # /play_mp3
     @app_commands.command(name="play_mp3", description="Play a local MP3 from /songs")
     @app_commands.describe(filename="Name of the file in /songs")
     async def play_mp3(self, interaction: discord.Interaction, filename: str):
@@ -124,6 +130,7 @@ class Music(commands.Cog):
         vc.play(source, after=get_loop_after(vc, self.player_state, source_factory))
         await interaction.response.send_message(f"🎵 Playing local file: **{filename}**")
 
+    # /play_playlist
     @app_commands.command(name="play_playlist", description="Play a folder of MP3s as a playlist")
     @app_commands.describe(playlist_name="Folder name in /playlist")
     async def play_playlist(self, interaction: discord.Interaction, playlist_name: str):
@@ -157,6 +164,7 @@ class Music(commands.Cog):
             f"📻 Started playlist **{playlist_name}**: **{self.player_state.current_song}**"
         )
 
+    # play next song in playlist
     def _play_next(self, error, text_channel: discord.abc.Messageable, vc: discord.VoiceClient):
         if error:
             print(f"❗ Playback error: {error}")
@@ -176,14 +184,16 @@ class Music(commands.Cog):
         else:
             coro = text_channel.send("✅ Playlist finished.")
             asyncio.run_coroutine_threadsafe(coro, self.bot.loop)
-            # cleanup the last source
+
             if self.player_state.current_source:
                 self.player_state.current_source.cleanup()
                 self.player_state.current_source = None
+
             self.player_state.current_song = None
             self.player_state.current_folder = None
             self.player_state.current_playlist.clear()
 
+    # /skip
     @app_commands.command(name="skip", description="Skip current song")
     async def skip(self, interaction: discord.Interaction):
         vc = interaction.guild.voice_client
@@ -195,19 +205,22 @@ class Music(commands.Cog):
         else:
             await interaction.response.send_message("❌ Nothing playing.")
 
-    @app_commands.command(name="nowplaying", description="Show current song")
+    # /now_playing
+    @app_commands.command(name="now_playing", description="Show current song")
     async def nowplaying(self, interaction: discord.Interaction):
         song = self.player_state.current_song
         await interaction.response.send_message(
             f"🎧 Now playing **{song}**" if song else "❌ No song playing."
         )
 
+    # /loop
     @app_commands.command(name="loop", description="Toggle looping of current song")
     async def loop(self, interaction: discord.Interaction):
         self.player_state.is_looping = not self.player_state.is_looping
         msg = "🔁 Looping enabled." if self.player_state.is_looping else "🔁 Looping disabled."
         await interaction.response.send_message(msg)
 
+    # /stop
     @app_commands.command(name="stop", description="Stop playback and clear queue")
     async def stop(self, interaction: discord.Interaction):
         vc = interaction.guild.voice_client

@@ -8,8 +8,8 @@ class MusicBot(commands.Bot):
         intents.message_content = True
         super().__init__(command_prefix="!", intents=intents)
 
+    # Load your music cog and sync slash commands
     async def setup_hook(self):
-        # Load your music cog and sync slash commands
         await self.load_extension("cogs.music")
         await self.tree.sync()
 

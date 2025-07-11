@@ -7,6 +7,7 @@ URL_REGEX = re.compile(r'https?://')
 def is_url(text: str) -> bool:
     return URL_REGEX.match(text) is not None
 
+# make sure we are connected to a voice channel
 async def ensure_voice(interaction: discord.Interaction) -> discord.VoiceClient | None:
     vc = interaction.guild.voice_client
     if not vc:
@@ -17,11 +18,8 @@ async def ensure_voice(interaction: discord.Interaction) -> discord.VoiceClient 
             return None
     return vc
 
+# loops the current song
 def get_loop_after(vc: discord.VoiceClient, player_state, source_factory):
-    """
-    Returns an after-callback that, if player_state.is_looping is True,
-    will create a fresh source via source_factory and replay it.
-    """
     def after(error=None):
         if error:
             print(f"❗ Playback error: {error}")
